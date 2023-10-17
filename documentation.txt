@@ -1,0 +1,670 @@
+Note : do "npm i" in the terminal before running the app
+
+Endpoint
+==========================================================================================================================================================================
+POST /addUser
+
+Description
+This endpoint allows the addition of a new user to the system. It checks for the existence of a user with the provided email or phone and, if found, handles cases where the user may have been deleted.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+first_name (String, required): First name of the user.
+last_name (String, required): Last name of the user.
+email (String, required): Email address of the user.
+password (String, required): Password for the user.
+phone (Number, required): Phone number of the user.
+code (String, required, length: 6): Code for the user.
+
+Example:
+
+{
+    "first_name": "Anuvrat",
+    "last_name": "joshi",
+    "email": "joshianuvrat@gmail.com",
+    "password": "12345",
+    "phone": 9445775984,
+    "code": "amansd"
+}
+
+Response
+
+Success
+
+Status: 200 OK
+message (String): Success message.
+
+user :{
+    "message": "User created successfully",
+    "user": {
+        "_id": "5fbc7a70c5df3c00178ba248",
+        "first_name": "Anuvrat",
+        "last_name": "joshi",
+        "email": "joshianuvrat@gmail.com",
+        "password": "12345",
+        "phone": 9445775984,
+        "code": "amansd",
+        "created_at": "Tue Oct 17 2023 18:57:38 GMT+0530 (India Standard Time)",
+        "updated_at": null,
+        "deleted_at": null
+    }
+}
+
+Error
+
+Status: 422 Unprocessable Entity
+error (String): Details about the validation error.
+{
+    "error": "Code should be of 6 characters"
+}
+
+Status: 401 Unauthorized
+error (String): Details about the unauthorized action.
+{
+    "error": "User / Phone number already exists"
+}
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+{
+    "error": "Internal Server Error"
+}
+
+Note
+If a user with the provided email or phone exists and is marked as deleted, the new user will be created.
+If a user with the provided email or phone exists and is not deleted, an error will be returned.
+The code should be exactly 6 characters long.
+
+==========================================================================================================================================================================
+
+
+
+Endpoint
+
+POST /addRole
+
+Description
+This endpoint allows the addition of a new role to the system. It checks for the existence of a role with the provided name and, if found, returns an error.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+name (String, required): Name of the role.
+
+Example:
+
+{
+    "name": "frontend Developer"
+}
+
+Response
+
+Success
+Status: 200 OK
+message (String): Success message.
+role (Object): Details of the created role.
+
+Example:
+
+{
+    "message": "Role created successfully",
+    "role": {
+        "_id": "5fbc7a70c5df3c00178ba248",
+        "name": "FRONTEND DEVELOPER",
+        "created_at": "Tue Oct 17 2023 18:57:38 GMT+0530 (India Standard Time)",
+        "updated_at": null
+    }
+}
+
+
+Error
+Status: 422 Unprocessable Entity
+error (String): Details about the validation error.
+
+Example:
+{
+    "error": "Please provide role name"
+}
+
+Status: 422 Unprocessable Entity
+error (String): Details about the existing role.
+
+Example:
+{
+    "error": "Role already exists"
+}
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+{
+    "error": "Internal Server Error"
+}
+
+Note
+The role name is case-insensitive and will be stored in uppercase.
+If a role with the provided name exists, an error will be returned.
+The created role will be returned with its details, including the role name in uppercase.
+
+
+==========================================================================================================================================================================
+
+
+Endpoint
+PUT /updateUser
+
+Description
+This endpoint allows the update of an existing user in the system. It checks for the existence of a user with the provided email and password, and if found, updates the specified fields.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+
+email (String, required): Email of the user to update.
+password (String, required): Password of the user to update.
+updateFields (Object, required): Fields to update in the user document. At least one field is required for updating.
+
+Example:
+
+{
+    "email": "aman@gmail.com",
+    "password": "12345",
+    "updateFields": {
+        "first_name": "rajan",
+        "last_name": "chauhan"
+    }
+}
+
+Response
+Success
+Status: 200 OK
+message (String): Success message.
+user (Object): Details of the updated user.
+
+Example:
+
+{
+    "message": "User updated successfully",
+    "user": {
+        "_id": "652e823131c4005fba9c3fe2",
+        "first_name": "RAJAN",
+        "last_name": "chauhan",
+        "email": "aman@gmail.com",
+        "password": "12345",
+        "phone": 9557115385,
+        "code": "amansdsa",
+        "created_at": "Tue Oct 17 2023 18:16:41 GMT+0530 (India Standard Time)",
+        "updated_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "deleted_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "__v": 0
+    }
+}
+
+
+Error
+Status: 400 Bad Request
+error (String): Details about the validation error.
+
+Example:
+
+{
+    "error": "Email and password are required for updating"
+}
+
+Status: 404 Not Found
+error (String): Details about the user not found or invalid credentials.
+
+Example:
+
+{
+    "error": "User not found or invalid credentials"
+}
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+
+{
+    "error": "Internal Server Error"
+}
+
+Note
+Only fields specified in updateFields will be updated.
+The updated_at field will be set to the current date and time.
+The user details will be returned with the updated timestamp.
+
+
+==========================================================================================================================================================================
+
+
+Endpoint
+PATCH /updateRole
+
+Description
+This endpoint allows the update of an existing role in the system. It checks for the existence of a role with the provided _id and, if found, updates the name and sets the updated_at timestamp.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+_id (String, required): Role ID of the role to update.
+name (String, required): New name for the role.
+
+Example:
+
+
+{
+    "_id": "652e87a16db6588f81c13746",
+    "name": "HTML developer"
+}
+
+Response
+Success
+Status: 200 OK
+message (String): Success message.
+role (Object): Details of the updated role.
+
+Example:
+
+{
+    "message": "Role updated successfully",
+    "role": {
+        "_id": "652e87a16db6588f81c13746",
+        "name": "HTML DEVELOPER",
+        "created_at": "Tue Oct 17 2023 18:39:38 GMT+0530 (India Standard Time)",
+        "updated_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "__v": 0
+    }
+}
+
+
+Error
+Status: 422 Unprocessable Entity
+error (String): Details about the validation error.
+Example:
+
+{
+    "error": "Please fill all the fields"
+}
+
+Status: 401 Unauthorized
+error (String): Details about the invalid Role ID.
+
+Example:
+
+
+{
+    "error": "Invalid Role id"
+}
+
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+
+
+{
+    "error": "Internal Server Error"
+}
+
+Note
+Only the name field will be updated.
+The updated_at field will be set to the current date and time.
+The role details will be returned with the updated timestamp.
+
+
+==========================================================================================================================================================================
+
+
+
+Endpoint
+DELETE /deleteUser
+
+Description
+This endpoint allows the logical deletion of a user in the system. It checks for the existence of a user with the provided email and password. If found, it sets the deleted_at timestamp to the current date and time, marking the user as deleted.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+email (String, required): Email of the user to delete.
+password (String, required): Password of the user.
+
+Example:
+
+
+{
+    "email": "aman@gmail.com",
+    "password": "12345"
+}
+
+
+Response
+Success
+Status: 200 OK
+message (String): Success message.
+user (Object): Details of the deleted user.
+
+
+Example:
+
+
+{
+    "message": "User deleted successfully",
+    "user": {
+        "_id": "652e823131c4005fba9c3fe2",
+        "first_name": "rajan",
+        "last_name": "chauhan",
+        "email": "aman@gmail.com",
+        "password": "12345",
+        "phone": 9557115385,
+        "code": "amansdsa",
+        "created_at": "Tue Oct 17 2023 18:16:41 GMT+0530 (India Standard Time)",
+        "updated_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "deleted_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "__v": 0
+    }
+}
+
+
+Error
+Status: 404 Not Found
+error (String): Details about the user not found or invalid credentials.
+
+Example:
+
+
+{
+    "error": "User not found or invalid credentials"
+}
+
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+
+
+{
+    "error": "Internal Server Error"
+}
+
+
+Note
+The user is marked as deleted by setting the deleted_at field.
+The deleted user details will be returned with the deleted timestamp.
+
+==========================================================================================================================================================================
+
+
+Endpoint
+POST /assignRole
+
+Description
+This endpoint allows the assignment of a role to a user in the system. It checks if the provided role_id and user_id are valid ObjectIds and verifies if the role is not already assigned to the user. If the checks pass, it creates a new UserRole document, associating the specified role with the user.
+
+Request
+Headers
+Content-Type: application/json
+
+Body
+role_id (String, required): ObjectId of the role to be assigned.
+user_id (String, required): ObjectId of the user to whom the role will be assigned.
+
+Example:
+
+
+{
+    "role_id": "652e87a16db6588f81c13746",
+    "user_id": "652e823131c4005fba9c3fe2"
+}
+
+
+Response
+Success
+Status: 200 OK
+message (String): Success message.
+user (Object): Details of the user to whom the role is assigned.
+role_id (String): ObjectId of the assigned role.
+
+
+Example:
+
+
+{
+    "message": "Role assigned successfully",
+    "user": {
+        "_id": "652e823131c4005fba9c3fe2",
+        "name": "rajan chauhan"
+    },
+    "role_id": "652e87a16db6588f81c13746"
+}
+
+
+Error
+Status: 400 Bad Request
+error (String): Details about invalid role_id or user_id.
+
+
+Example:
+
+
+{
+    "error": "Invalid role_id"
+}
+
+
+Status: 404 Not Found
+error (String): Details about the user not found.
+
+
+Example:
+
+
+{
+    "error": "User not found"
+}
+
+
+Status: 400 Bad Request
+error (String): Details about the role already being assigned to the user.
+
+
+Example:
+
+
+{
+    "error": "Role is already assigned to the user"
+}
+
+
+Status: 400 Bad Request
+error (String): Details about the user being deleted.
+
+
+Example:
+
+
+{
+    "error": "Can not assign the role as the user is deleted"
+}
+
+
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+
+Example:
+
+
+{
+    "error": "Internal Server Error"
+}
+
+
+Note
+The endpoint performs various checks to ensure the validity of the role_id and user_id.
+It verifies if the role is not already assigned to the user.
+If successful, it creates a new UserRole document and returns details about the assigned role and user.
+
+
+==========================================================================================================================================================================
+
+Endpoint
+GET /usersWithRoles
+
+Description
+This endpoint retrieves a list of users along with their assigned roles. It fetches all UserRole documents, populates user and role details, and returns an array containing user and role information for each assignment.
+
+Request
+Headers
+Content-Type: application/json
+Response
+Success
+Status: 200 OK
+usersWithRoles (Array): An array containing objects with user and role details.
+
+
+Example:
+
+
+
+{
+    "usersWithRoles": [
+        {
+            "user": {
+                "_id": "652e823131c4005fba9c3fe2",
+                "name": "rajan chauhan",
+                "email": "aman@gmail.com"
+            },
+            "role": {
+                "_id": "652e87a16db6588f81c13746",
+                "name": "HTMl developer"
+            }
+        },
+        {
+            "user": {
+                "_id": "652e8d8637e23a6d57d1c371",
+                "name": "John Doe",
+                "email": "john@example.com"
+            },
+            "role": {
+                "_id": "652e87926db6588f81c13742",
+                "name": "BACKEND DEVELOPER"
+            }
+        },
+        
+    ]
+}
+
+
+Error
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+
+
+{
+    "error": "Internal Server Error"
+}
+
+
+Note
+The endpoint fetches all UserRole documents and populates user and role details.
+It returns an array containing objects with user and role information for each assignment.
+In case of an internal server error, it returns an appropriate error message.
+
+
+==========================================================================================================================================================================
+
+
+Endpoint
+POST /user
+
+Description
+This endpoint retrieves detailed information about a user along with the roles assigned to them. It requires the userId parameter in the request body to identify the user.
+
+Request
+Headers
+Content-Type: application/json
+Body
+userId (String): The unique identifier for the user.
+
+
+Example:
+
+
+
+{
+    "userId": "652e823131c4005fba9c3fe2"
+}
+
+Response
+Success
+Status: 200 OK
+user (Object): An object containing detailed information about the user.
+roles (Array): An array containing objects with details about roles assigned to the user.
+
+Example:
+
+
+
+{
+    "user": {
+        "_id": "652e823131c4005fba9c3fe2",
+        "first_name": "rajan",
+        "last_name": "chauhan",
+        "email": "aman@gmail.com",
+        "password": "12345",
+        "phone": 9557115385,
+        "code": "amansdsa",
+        "created_at": "Tue Oct 17 2023 18:16:41 GMT+0530 (India Standard Time)",
+        "updated_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+        "deleted_at": "Tue Oct 17 2023 20:12:50 GMT+0530 (India Standard Time)",
+    },
+    "roles": [
+        {
+            "_id": "652e87a16db6588f81c13746",
+            "name": "HTML developer"
+        },
+        {
+            "_id": "652e87926db6588f81c13742",
+            "name": "BACKEND DEVELOPER"
+        },
+    ]
+}
+
+
+Error
+Status: 500 Internal Server Error
+error (String): Details about the internal server error.
+
+Example:
+
+
+{
+    "error": "Internal Server Error"
+}
+
+
+Note
+The endpoint retrieves detailed information about a user, including their roles.
+It requires the userId parameter in the request body.
+If the user is deleted, it returns an error message indicating that the user is deleted.
+In case of an internal server error, it returns an appropriate error message.
+
+
+==========================================================================================================================================================================
